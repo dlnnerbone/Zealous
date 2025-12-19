@@ -1,0 +1,3 @@
+[submodule "GameComponents"]
+	path = GameComponents
+	url = https://github.com/dlnnerbone/GameComponents.git

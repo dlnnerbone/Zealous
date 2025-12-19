@@ -31,3 +31,4 @@
 /home/dinnerbone/Games/Zealous/Zealous/obj/Debug/net8.0/Zealous.pdb
 /home/dinnerbone/Games/Zealous/Zealous/obj/Debug/net8.0/Zealous.genruntimeconfig.cache
 /home/dinnerbone/Games/Zealous/Zealous/obj/Debug/net8.0/ref/Zealous.dll
+/home/dinnerbone/Games/Zealous/Zealous/obj/Debug/net8.0/Zealous.sourcelink.json
