@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zealous", "Zealous\Zealous.csproj", "{E614CE0F-0A4A-4F76-8415-7784AE7E9649}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameComponents", "GameComponents\GameComponents.csproj", "{913A4071-3B41-4B06-BE9F-FFA2BBE779FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{E614CE0F-0A4A-4F76-8415-7784AE7E9649}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E614CE0F-0A4A-4F76-8415-7784AE7E9649}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E614CE0F-0A4A-4F76-8415-7784AE7E9649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{913A4071-3B41-4B06-BE9F-FFA2BBE779FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{913A4071-3B41-4B06-BE9F-FFA2BBE779FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{913A4071-3B41-4B06-BE9F-FFA2BBE779FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{913A4071-3B41-4B06-BE9F-FFA2BBE779FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

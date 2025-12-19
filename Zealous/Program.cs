@@ -1,2 +1,2 @@
-﻿using var game = new Zealous.Game1();
+﻿using var game = new Zealous.ZealousGame("Zealous");
 game.Run();
