@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using Microsoft.Xna.Framework.Input;
+using GameComponents.Managers;
 
 namespace Zealous;
 
@@ -8,12 +9,18 @@ public class ZealousGame : Game
 {
     private GraphicsDeviceManager device;
     private SpriteBatch spriteBatch;
+    private Keys keyToExit = Keys.Escape;
+    private InputManager input = new();
+    
+    // object that manages all game stuff
+    private SceneManager mainScene = new("Zealous");
     
     public ZealousGame(string name) 
     {
         device = new(this);
         IsMouseVisible = true;
         Content.RootDirectory = "Content";
+        Window.Title = name;
     }
     
     protected override void Initialize() 
@@ -23,17 +30,28 @@ public class ZealousGame : Game
         device.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
         device.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
         device.ApplyChanges();
+        
+        mainScene.Initialize(this);
     }
     
     protected override void LoadContent() 
     {
         base.LoadContent();
         
+        mainScene.LoadSceneContent(this);
+        
         spriteBatch = new(GraphicsDevice);
     }
     
     protected override void Update(GameTime gameTime) 
     {
+        MouseManager.UpdateInputs();
+        input.UpdateInputs();
+        
+        if (input.IsKeyPressed(keyToExit)) Exit();
+        
+        mainScene.UpdateScene(gameTime);
+        
         base.Update(gameTime);
     }
     
@@ -41,8 +59,7 @@ public class ZealousGame : Game
     {
         GraphicsDevice.Clear(Color.Transparent);
         
-        spriteBatch.Begin();
-        spriteBatch.End();
+        mainScene.Draw(spriteBatch);
         
         base.Draw(gameTime);
     }
