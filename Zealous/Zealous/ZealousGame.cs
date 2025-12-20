@@ -37,7 +37,6 @@ public class ZealousGame : Game
     protected override void LoadContent() 
     {
         base.LoadContent();
-        
         mainScene.LoadSceneContent(this);
         
         spriteBatch = new(GraphicsDevice);

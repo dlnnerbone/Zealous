@@ -17,6 +17,8 @@ public sealed class SceneManager : Scene
     
     public enum GameStates { Zealous, UI, GameOver } GameStates CurrentGameState = GameStates.Zealous;
     
+    public Player Player { get; private set; }
+    
     public SceneManager(string name) : base(name) 
     {
         Diagnostics.Write($"{name}");
@@ -29,19 +31,23 @@ public sealed class SceneManager : Scene
     
     public override void LoadSceneContent(Game game, string rootDir = "Content") 
     {
-        base.LoadSceneContent(game, rootDir);
+        Player = new Player();
+        Player.LoadContent(game.GraphicsDevice);
     }
     
     public override void UpdateScene(GameTime gt) 
     {
         base.UpdateScene(gt);
+        Player.Update(gt);
+        
     }
     
     public void Draw(SpriteBatch batch) 
     {
-        base.DrawScene();
+        DrawScene();
         
         batch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Effects, null);
+        Player.DrawPlayer(batch);
         batch.End();
     }
 }
