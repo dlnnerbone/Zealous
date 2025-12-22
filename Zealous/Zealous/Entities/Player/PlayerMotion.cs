@@ -4,6 +4,7 @@ using GameComponents;
 using GameComponents.Managers;
 using GameComponents.Entity;
 using System;
+using GameComponents.Logic;
 using GameComponents.Helpers;
 
 namespace Zealous;
@@ -14,7 +15,7 @@ public sealed class PlayerMovement
     private float maxSpeed = 500f;
     private float acceleration = 1f;
     private float jumpForce = 500f;
-    private float gravity = 10f;
+    private float gravity = 25f;
     private float dashForce = 2000f;
     
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = MathHelper.Clamp(value, 0f, maxSpeed) * acceleration; }
@@ -27,7 +28,7 @@ public sealed class PlayerMovement
     public bool CanDash { get; set; } = true;
     public bool IsDashing { get; private set; } = false;
     public bool CanJump { get; set; } = true;
-    public bool IsJumping { get; private set; } = false;
+    public bool IsJumping => velocity.Y < 1f;
     public bool IsControllable { get; set; } = true;
     public bool IsMovementActive { get; set; } = true;
     
@@ -36,14 +37,21 @@ public sealed class PlayerMovement
     private readonly InputManager input = new();
     private Vector2 velocity = Vector2.Zero;
     
+    public readonly Timer DashDuration, DashCooldown;
+    
     // helpers
     public float NormalizedSpeedProgress => moveSpeed / maxSpeed;
     public void SwitchMotions(Motions newMotionState) => MotionState = newMotionState;
     
+    public PlayerMovement() 
+    {
+        DashDuration = new Timer(0.25f);
+        DashCooldown = new Timer(0.65f);
+    }
+    
     public void Jump() 
     {
         if (!CanJump) return;
-        IsJumping = true;
         velocity.Y = (int)-JumpForce;
     }
     
@@ -54,13 +62,14 @@ public sealed class PlayerMovement
         if (!IsMovementActive) return;
         input.UpdateInputs();
         stateManager();
+        DashCooldown.TickTock(gt);
+        DashDuration.TickTock(gt);
         
         switch(MotionState) 
         {
             case Motions.Idle: idle(); break; // idle, enables control, turns ashing & jumping to false.
             case Motions.Moving: moving(); break; // Moving,, same with idle.
             case Motions.Dashing: dashing(target); break; // disables control for dashing.
-            case Motions.Jumping: jumping(); break; // enables jumping and control.
             case Motions.Sliding: plummeling(); break; // disables control and can be dashed mid-sequence.
         }
         
@@ -71,15 +80,35 @@ public sealed class PlayerMovement
     
     private void stateManager() 
     {
-        if (input.WASD) SwitchMotions(Motions.Moving);
-        else if (MotionState != Motions.Dashing) SwitchMotions(Motions.Idle);
+        if (input.WASD && IsControllable && MotionState != Motions.Sliding) SwitchMotions(Motions.Moving);
+        else if (MotionState != Motions.Dashing && MotionState != Motions.Sliding) SwitchMotions(Motions.Idle);
         
+        bool dashIsViable = CanDash && IsControllable && !IsDashing && input.IsKeyPressed(Keys.LeftShift) && velocity != Vector2.Zero;
+        if (dashIsViable && DashCooldown.TimeHitsFloor() || (dashIsViable && DashCooldown.TimeHitsFloor() && MotionState == Motions.Sliding)) 
+        {
+            IsControllable = false;
+            IsDashing = true;
+            DashCooldown.Restart();
+            DashDuration.Restart();
+            SwitchMotions(Motions.Dashing);
+        }
+        
+        if (input.IsKeyPressed(Keys.E) && IsJumping) 
+        {
+            IsDashing = false;
+            SwitchMotions(Motions.Sliding);
+        }
+        else if (input.IsKeyPressed(Keys.Space)) 
+        {
+            IsControllable = true;
+            Jump();
+        }
+        else if (MotionState != Motions.Sliding) velocity.Y += Gravity;
     }
     
     private void idle() 
     {
         IsDashing = false;
-        IsJumping = false;
         IsControllable = true;
         
         velocity = Vector2.Lerp(velocity, Vector2.Zero, 0.1f);
@@ -88,7 +117,6 @@ public sealed class PlayerMovement
     private void moving() 
     {
         IsDashing = false;
-        IsJumping = false;
         IsControllable = true;
         
         var maxVector = new Vector2(MaxSpeed, MaxSpeed);
@@ -101,10 +129,18 @@ public sealed class PlayerMovement
     
     private void dashing(Entity player)
     {
-        
+        velocity.X = player.Direction.X * DashForce;
+        if (DashDuration.TimeHitsFloor()) 
+        {
+            IsControllable = true;
+            IsDashing = false;
+            SwitchMotions(Motions.Moving);
+        }
     }
     
-    private void jumping() {}
-    
-    private void plummeling() {}
+    private void plummeling() 
+    {
+        velocity.Y = 2000f;
+        velocity.X = 0f;
+    }
 }
