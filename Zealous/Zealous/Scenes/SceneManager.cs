@@ -17,29 +17,27 @@ public sealed class SceneManager : Scene
     
     public enum GameStates { Zealous, UI, GameOver } GameStates CurrentGameState = GameStates.Zealous;
     
-    public Player Player { get; private set; }
+    // Managers
     
-    public SceneManager(string name) : base(name) 
-    {
-        Diagnostics.Write($"{name}");
-    }
+    public readonly GameScene GameManager = new();
+    
+    public SceneManager(string name) : base(name) {}
     
     public override void Initialize(Game game) 
     {
         base.Initialize(game);
+        GameManager.Initialize(game);
     }
     
     public override void LoadSceneContent(Game game, string rootDir = "Content") 
     {
-        Player = new Player();
-        Player.LoadContent(game.GraphicsDevice);
+        GameManager.LoadSceneContent(game);
     }
     
     public override void UpdateScene(GameTime gt) 
     {
         base.UpdateScene(gt);
-        Player.Update(gt);
-        
+        GameManager.UpdateScene(gt);
     }
     
     public void Draw(SpriteBatch batch) 
@@ -47,7 +45,7 @@ public sealed class SceneManager : Scene
         DrawScene();
         
         batch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Effects, null);
-        Player.DrawPlayer(batch);
+        GameManager.DrawScene(batch);
         batch.End();
     }
 }

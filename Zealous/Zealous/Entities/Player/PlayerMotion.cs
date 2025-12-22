@@ -14,7 +14,7 @@ public sealed class PlayerMovement
     private float moveSpeed = 50f;
     private float maxSpeed = 500f;
     private float acceleration = 1f;
-    private float jumpForce = 500f;
+    private float jumpForce = 1200f;
     private float gravity = 25f;
     private float dashForce = 2000f;
     
@@ -80,8 +80,16 @@ public sealed class PlayerMovement
     
     private void stateManager() 
     {
-        if (input.WASD && IsControllable && MotionState != Motions.Sliding) SwitchMotions(Motions.Moving);
-        else if (MotionState != Motions.Dashing && MotionState != Motions.Sliding) SwitchMotions(Motions.Idle);
+        if (input.WASD && IsControllable && MotionState != Motions.Sliding) 
+        {
+            Gravity = 0;
+            SwitchMotions(Motions.Moving);
+        }
+        else if (MotionState != Motions.Dashing && MotionState != Motions.Sliding) 
+        {
+            Gravity = 0;
+            SwitchMotions(Motions.Idle);
+        }
         
         bool dashIsViable = CanDash && IsControllable && !IsDashing && input.IsKeyPressed(Keys.LeftShift) && velocity != Vector2.Zero;
         if (dashIsViable && DashCooldown.TimeHitsFloor() || (dashIsViable && DashCooldown.TimeHitsFloor() && MotionState == Motions.Sliding)) 
@@ -100,10 +108,16 @@ public sealed class PlayerMovement
         }
         else if (input.IsKeyPressed(Keys.Space)) 
         {
-            IsControllable = true;
             Jump();
+            Gravity = 0;
         }
-        else if (MotionState != Motions.Sliding) velocity.Y += Gravity;
+        else if (MotionState != Motions.Sliding) 
+        {
+            Gravity = 25;
+            velocity.Y += Gravity;
+        }
+        
+        Diagnostics.Write($"{MouseManager.ScreenMousePosition}");
     }
     
     private void idle() 
@@ -111,7 +125,7 @@ public sealed class PlayerMovement
         IsDashing = false;
         IsControllable = true;
         
-        velocity = Vector2.Lerp(velocity, Vector2.Zero, 0.1f);
+        velocity.X = MathHelper.Lerp(velocity.X, 0f, 0.1f);
     }
     
     private void moving() 
@@ -119,9 +133,7 @@ public sealed class PlayerMovement
         IsDashing = false;
         IsControllable = true;
         
-        var maxVector = new Vector2(MaxSpeed, MaxSpeed);
-        var minVector = new Vector2(-MaxSpeed, -MaxSpeed);
-        velocity = Vector2.Clamp(velocity, minVector, maxVector);
+        velocity.X = MathHelper.Clamp(velocity.X, -MaxSpeed, MaxSpeed);
         
         if (input.IsKeyDown(Keys.A)) velocity.X -= MoveSpeed;
         else if (input.IsKeyDown(Keys.D)) velocity.X += MoveSpeed;
@@ -140,7 +152,7 @@ public sealed class PlayerMovement
     
     private void plummeling() 
     {
-        velocity.Y = 2000f;
+        velocity.Y = 1500f;
         velocity.X = 0f;
     }
 }
