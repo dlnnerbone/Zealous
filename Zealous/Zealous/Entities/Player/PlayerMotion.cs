@@ -31,6 +31,7 @@ public sealed class PlayerMovement
     public bool IsJumping => velocity.Y < 1f;
     public bool IsControllable { get; set; } = true;
     public bool IsMovementActive { get; set; } = true;
+    public bool IsPlummeting { get; private set; } = false;
     
     public Motions MotionState = Motions.Idle;
     
@@ -70,7 +71,7 @@ public sealed class PlayerMovement
             case Motions.Idle: idle(); break; // idle, enables control, turns ashing & jumping to false.
             case Motions.Moving: moving(); break; // Moving,, same with idle.
             case Motions.Dashing: dashing(target); break; // disables control for dashing.
-            case Motions.Sliding: plummeling(); break; // disables control and can be dashed mid-sequence.
+            case Motions.Sliding: plummeting(); break; // disables control and can be dashed mid-sequence.
         }
         
         target.Velocity = velocity;
@@ -117,13 +118,14 @@ public sealed class PlayerMovement
             velocity.Y += Gravity;
         }
         
-        Diagnostics.Write($"{MouseManager.ScreenMousePosition}");
+        Diagnostics.Write($"CurrentState: {MotionState}, {velocity}");
     }
     
     private void idle() 
     {
         IsDashing = false;
         IsControllable = true;
+        IsPlummeting = false;
         
         velocity.X = MathHelper.Lerp(velocity.X, 0f, 0.1f);
     }
@@ -132,6 +134,7 @@ public sealed class PlayerMovement
     {
         IsDashing = false;
         IsControllable = true;
+        IsPlummeting = false;
         
         velocity.X = MathHelper.Clamp(velocity.X, -MaxSpeed, MaxSpeed);
         
@@ -141,8 +144,11 @@ public sealed class PlayerMovement
     
     private void dashing(Entity player)
     {
+        velocity.Y = 0;
+        IsPlummeting = false;
+        
         velocity.X = player.Direction.X * DashForce;
-        if (DashDuration.TimeHitsFloor()) 
+        if (DashDuration.TimeHitsFloor() || IsPlummeting) 
         {
             IsControllable = true;
             IsDashing = false;
@@ -150,9 +156,10 @@ public sealed class PlayerMovement
         }
     }
     
-    private void plummeling() 
+    private void plummeting() 
     {
+        IsPlummeting = true;
         velocity.Y = 1500f;
-        velocity.X = 0f;
+        velocity.X = input.IsKeyDown(Keys.A) ? -1f : input.IsKeyDown(Keys.D) ? 1f : 1f;
     }
 }
