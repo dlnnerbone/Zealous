@@ -24,21 +24,20 @@ public sealed class GameScene : Scene
         base.Initialize(game);
     }
     
-    public override void LoadSceneContent(Game game, string rootDir = "Content") 
+    public void LoadContent(Game game) 
     {
-        base.LoadSceneContent(game);
         Player.LoadContent(game.GraphicsDevice);
     }
     
-    public override void UpdateScene(GameTime gt) 
+    public override void Update(GameTime gt) 
     {
-        base.UpdateScene(gt);
+        base.Update(gt);
         Player.Update(gt);
     }
     
-    public void DrawScene(SpriteBatch batch) 
+    public override void DrawScene(SpriteBatch batch) 
     {
-        DrawScene();
+        base.DrawScene(batch);
         
         Player.DrawPlayer(batch);
     }

@@ -29,20 +29,20 @@ public sealed class SceneManager : Scene
         GameManager.Initialize(game);
     }
     
-    public override void LoadSceneContent(Game game, string rootDir = "Content") 
+    public void LoadContent(Game game) 
     {
-        GameManager.LoadSceneContent(game);
+        GameManager.LoadContent(game);
     }
     
-    public override void UpdateScene(GameTime gt) 
+    public override void Update(GameTime gt) 
     {
-        base.UpdateScene(gt);
-        GameManager.UpdateScene(gt);
+        base.Update(gt);
+        GameManager.Update(gt);
     }
     
     public void Draw(SpriteBatch batch) 
     {
-        DrawScene();
+        base.DrawScene(batch);
         
         batch.Begin(SortMode, BlendState, SamplerState, DepthStencilState, RasterizerState, Effects, null);
         GameManager.DrawScene(batch);

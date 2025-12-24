@@ -37,7 +37,7 @@ public class ZealousGame : Game
     protected override void LoadContent() 
     {
         base.LoadContent();
-        mainScene.LoadSceneContent(this);
+        mainScene.LoadContent(this);
         
         spriteBatch = new(GraphicsDevice);
     }
@@ -49,7 +49,7 @@ public class ZealousGame : Game
         
         if (input.IsKeyPressed(keyToExit)) Exit();
         
-        mainScene.UpdateScene(gameTime);
+        mainScene.Update(gameTime);
         
         base.Update(gameTime);
     }
