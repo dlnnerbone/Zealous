@@ -34,3 +34,7 @@
 /home/dinnerbone/Games/Zealous/Zealous/obj/Debug/net8.0/Zealous.sourcelink.json
 /home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/GameComponents.dll
 /home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/GameComponents.pdb
+/home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/Content/Audio/uuhhh_wav.ogg
+/home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/Content/Audio/uuhhh_wav.xnb
+/home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/Content/Audio/HeartbeatWhenLow.xnb
+/home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/Content/Fonts/VCR_EAS.xnb

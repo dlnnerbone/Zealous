@@ -1,1 +1,4 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"/home/dinnerbone/Games/Zealous/Zealous/Content/Audio/HeartbeatWhenLow.mp3","/home/dinnerbone/Games/Zealous/Zealous/Content/bin/DesktopGL/Content/Audio/HeartbeatWhenLow.xnb","SoundEffectProcessor","SoundEffectContent",19200,157801,0.2400909
+"/home/dinnerbone/Games/Zealous/Zealous/Content/Audio/uuhhh_wav.mp3","/home/dinnerbone/Games/Zealous/Zealous/Content/bin/DesktopGL/Content/Audio/uuhhh_wav.xnb","SoundEffectProcessor","SoundEffectContent",3313,17035,0.2272942
+"/home/dinnerbone/Games/Zealous/Zealous/Content/Fonts/VCR_EAS.spritefont","/home/dinnerbone/Games/Zealous/Zealous/Content/bin/DesktopGL/Content/Fonts/VCR_EAS.xnb","FontDescriptionProcessor","SpriteFontContent",2018,21529,0.3455128

@@ -4,19 +4,18 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using GameComponents.Entity;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Zealous;
 
 public sealed class GameScene : Scene 
 {
     public readonly Player Player;
-    public readonly List<Entity> Entities, InactiveEntities;
     
     public GameScene() : base("Main Game Scene.") 
     {
         Player = new();
-        Entities = new List<Entity>();
-        InactiveEntities = new List<Entity>();
     }
     
     public override void Initialize(Game game) 
@@ -26,7 +25,8 @@ public sealed class GameScene : Scene
     
     public void LoadContent(Game game) 
     {
-        Player.LoadContent(game.GraphicsDevice);
+        base.LoadContent(game);
+        Player.LoadContent(game.GraphicsDevice, Content);
     }
     
     public override void Update(GameTime gt) 
