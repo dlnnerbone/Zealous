@@ -7,6 +7,7 @@ using System;
 using GameComponents.Rendering;
 using GameComponents.Helpers;
 using Microsoft.Xna.Framework.Content;
+using GameComponents;
 
 namespace Zealous;
 
@@ -23,7 +24,8 @@ public sealed class Player : Entity
     public void LoadContent(GraphicsDevice graphics, ContentManager content) 
     {
         Sprite = new Sprite(new Texture2D(graphics, 1, 1), Color.White);
-        Sprite.SetData(Color.White);
+        Sprite.SetData(Color.Purple);
+        Sprite.LayerDepth = 0.85f;
         
         Movement.Load(content);
     }
@@ -41,7 +43,39 @@ public sealed class Player : Entity
     public void DrawPlayer(SpriteBatch batch) 
     {
         Sprite.Draw(batch, Bounds);
-        Movement.DrawMovementStats(batch);
+    }
+    
+    // for Updating against collision
+    
+    public void Collision(ref Collider collider, out Vector2 center) 
+    {
+        var colliderCenter = new Vector2(collider.Bounds.X + collider.Bounds.Width / 2, collider.Bounds.Y + collider.Bounds.Height / 2);
+        if (!Intersects(collider.Bounds)) 
+        {
+            center = colliderCenter;
+            return;
+        }
+        center = colliderCenter;
+        
+        var distance = Center - colliderCenter;
+        
+        var minDistanceX = collider.Bounds.Width / 2 + Width / 2;
+        var minDistanceY = collider.Bounds.Height / 2 + Height / 2;
+        
+        var overlapX = Center.X < center.X ? distance.X + minDistanceX : Math.Abs(distance.X - minDistanceX);
+        var overlapY = Center.Y < center.Y ? distance.Y + minDistanceY : Math.Abs(distance.Y - minDistanceY);
+        
+        var isTouching = overlapX < overlapY;
+        if (isTouching) 
+        {
+            if (Center.X < center.X) X -= (int)overlapX;
+            else X += (int)overlapY;
+        }
+        else 
+        {
+            if (Center.Y < center.Y) Y -= (int)overlapY;
+            else Y += (int)overlapY;
+        }
     }
     
 }

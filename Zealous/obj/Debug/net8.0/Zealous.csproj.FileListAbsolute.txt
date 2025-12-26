@@ -38,3 +38,4 @@
 /home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/Content/Audio/uuhhh_wav.xnb
 /home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/Content/Audio/HeartbeatWhenLow.xnb
 /home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/Content/Fonts/VCR_EAS.xnb
+/home/dinnerbone/Games/Zealous/Zealous/bin/Debug/net8.0/Content/Assets/TextureAtlases/BasicTileSet.xnb

@@ -21,8 +21,6 @@ public sealed class PlayerMovement
     private float jumpForce = 1200f;
     private float gravity = 25f;
     private float dashForce = 2000f;
-    private float stamina = 100f;
-    private float maxStamina = 100f;
     
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = MathHelper.Clamp(value, 0f, maxSpeed) * acceleration; }
     public float MaxSpeed { get => maxSpeed; set => maxSpeed = MathHelper.Clamp(value, moveSpeed, float.PositiveInfinity); }
@@ -30,8 +28,6 @@ public sealed class PlayerMovement
     public float JumpForce { get => jumpForce; set => jumpForce = Math.Abs(value); }
     public float Gravity { get => gravity; set => gravity = Math.Abs(value); }
     public float DashForce { get => dashForce; set => dashForce = MathHelper.Clamp(value, MaxSpeed, float.PositiveInfinity); }
-    public float Stamina { get => stamina; set => stamina = MathHelper.Clamp(value, 0f, maxStamina); }
-    public float MaxStamina { get => maxStamina; set => maxStamina = MathHelper.Clamp(value, float.Epsilon, float.PositiveInfinity); }
     
     public bool CanDash { get; set; } = true;
     public bool IsDashing { get; private set; } = false;
@@ -40,6 +36,7 @@ public sealed class PlayerMovement
     public bool IsControllable { get; set; } = true;
     public bool IsMovementActive { get; set; } = true;
     public bool IsPlummeting { get; private set; } = false;
+    public bool CanPlummet { get; set; } = true;
     
     public Motions MotionState = Motions.Idle;
     
@@ -48,11 +45,9 @@ public sealed class PlayerMovement
     
     public readonly Timer DashDuration, DashCooldown, StaminaRegen;
     public readonly AudioManager Audio;
-    public SpriteText Font { get; private set; }
     
     // helpers
     public float NormalizedSpeedProgress => moveSpeed / maxSpeed;
-    public float NormalizedStamina => Stamina / MaxStamina;
     
     public void SwitchMotions(Motions newMotionState) => MotionState = newMotionState;
     
@@ -69,9 +64,6 @@ public sealed class PlayerMovement
     {
         Audio.AddSoundEffect("Dash", content.Load<SoundEffect>("Audio/uuhhh_wav"));
         Audio.AddSoundEffect("LowOnStamina", content.Load<SoundEffect>("Audio/HeartbeatWhenLow"));
-        
-        Font = new(content.Load<SpriteFont>("Fonts/VCR_EAS"));
-        Font.Position = new Vector2(50, 100);
     }
     
     public void Jump() 
@@ -87,7 +79,6 @@ public sealed class PlayerMovement
         if (!IsMovementActive) return;
         input.UpdateInputs();
         stateManager();
-        staminaRegen();
         
         DashCooldown.TickTock(gt);
         DashDuration.TickTock(gt);
@@ -121,7 +112,7 @@ public sealed class PlayerMovement
         
         bool dashIsViable = CanDash && IsControllable && !IsDashing && input.IsKeyPressed(Keys.LeftShift) && velocity != Vector2.Zero;
         
-        if (dashIsViable && DashCooldown.TimeHitsFloor() || (dashIsViable && DashCooldown.TimeHitsFloor() && MotionState == Motions.Sliding) && Stamina > 22f) 
+        if (dashIsViable && DashCooldown.TimeHitsFloor() || (dashIsViable && DashCooldown.TimeHitsFloor() && MotionState == Motions.Sliding)) 
         {
             IsControllable = false;
             IsDashing = true;
@@ -131,7 +122,7 @@ public sealed class PlayerMovement
             SwitchMotions(Motions.Dashing);
         }
         
-        if (input.IsKeyPressed(Keys.E) && IsJumping) 
+        if (input.IsKeyPressed(Keys.E) && IsJumping && CanPlummet) 
         {
             IsDashing = false;
             SwitchMotions(Motions.Sliding);
@@ -188,19 +179,5 @@ public sealed class PlayerMovement
         IsPlummeting = true;
         velocity.Y = 1500f;
         velocity.X = input.IsKeyDown(Keys.A) ? -1f : input.IsKeyDown(Keys.D) ? 1f : 1f;
-    }
-    
-    private void staminaRegen() 
-    {
-        var nextRegen = Stamina + 10f;
-        if (StaminaRegen.TimeSpan <= 0.1f) 
-        {
-            Stamina = MathHelper.Lerp(Stamina, nextRegen, 0.2f);
-        }
-    }
-    
-    public void DrawMovementStats(SpriteBatch batch) 
-    {
-        Font.DrawString(batch, $"{Stamina}%");
     }
 }
