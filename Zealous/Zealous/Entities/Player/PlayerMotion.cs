@@ -21,6 +21,7 @@ public sealed class PlayerMovement
     private float jumpForce = 1200f;
     private float gravity = 25f;
     private float dashForce = 2000f;
+    private Vector2 velocity = Vector2.Zero;
     
     public float MoveSpeed { get => moveSpeed; set => moveSpeed = MathHelper.Clamp(value, 0f, maxSpeed) * acceleration; }
     public float MaxSpeed { get => maxSpeed; set => maxSpeed = MathHelper.Clamp(value, moveSpeed, float.PositiveInfinity); }
@@ -32,7 +33,7 @@ public sealed class PlayerMovement
     public bool CanDash { get; set; } = true;
     public bool IsDashing { get; private set; } = false;
     public bool CanJump { get; set; } = true;
-    public bool IsJumping => velocity.Y < 1f;
+    public bool IsJumping => Velocity.Y < 1f;
     public bool IsControllable { get; set; } = true;
     public bool IsMovementActive { get; set; } = true;
     public bool IsPlummeting { get; private set; } = false;
@@ -41,7 +42,7 @@ public sealed class PlayerMovement
     public Motions MotionState = Motions.Idle;
     
     private readonly InputManager input = new();
-    private Vector2 velocity = Vector2.Zero;
+    public Vector2 Velocity { get => velocity; set => velocity = value; }
     
     public readonly Timer DashDuration, DashCooldown, StaminaRegen;
     public readonly AudioManager Audio;

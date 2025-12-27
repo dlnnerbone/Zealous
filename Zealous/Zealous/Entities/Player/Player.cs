@@ -69,12 +69,21 @@ public sealed class Player : Entity
         if (isTouching) 
         {
             if (Center.X < center.X) X -= (int)overlapX;
-            else X += (int)overlapY;
+            else X += (int)overlapX;
         }
         else 
         {
-            if (Center.Y < center.Y) Y -= (int)overlapY;
-            else Y += (int)overlapY;
+            if (Center.Y < center.Y) 
+            {
+                Velocity_Y = 0f;
+                Movement.Velocity = new(Movement.Velocity.X, -1f);
+                Diagnostics.Write($"{Velocity_Y}, {Movement.Velocity.Y}");
+                Y -= (int)overlapY;
+            }
+            else 
+            {
+                Y += (int)overlapY;
+            }
         }
     }
     
